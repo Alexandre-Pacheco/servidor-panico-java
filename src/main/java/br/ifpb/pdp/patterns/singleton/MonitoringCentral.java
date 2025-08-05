@@ -30,7 +30,7 @@ public class MonitoringCentral implements AlertObserver {
             TriggerAlertCommand triggerCommand = (TriggerAlertCommand) alertCommand;
             int newId = incidentCounter.incrementAndGet();
             IncidentContext newIncident = new IncidentContext(newId, triggerCommand.getUser(), triggerCommand.getLocation());
-
+            
             synchronized (activeIncidents) {
                 activeIncidents.add(newIncident);
             }
@@ -44,7 +44,7 @@ public class MonitoringCentral implements AlertObserver {
             historicalIncidents.add(incident);
         }
     }
-
+    
     public synchronized List<IncidentContext> getActiveIncidents() {
         return new ArrayList<>(activeIncidents);
     }
