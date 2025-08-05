@@ -19,7 +19,7 @@ public class TriggerAlertCommand implements Command {
         System.out.println("[Command] Executando TriggerAlertCommand para: " + user.getName());
         publisher.notify(this);
     }
-
+    
     public User getUser() { return user; }
     public String getLocation() { return location; }
 }
