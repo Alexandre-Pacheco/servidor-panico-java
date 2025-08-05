@@ -6,7 +6,7 @@ public class IncidentContext {
     private final int id;
     private final User user;
     private final String location;
-    private transient IncidentState state; // `transient` para evitar serialização pelo GSON
+    private transient IncidentState state;
 
     public IncidentContext(int id, User user, String location) {
         this.id = id;
@@ -14,7 +14,7 @@ public class IncidentContext {
         this.location = location;
         this.state = new PendingState(this);
     }
-
+    
     public void setState(IncidentState newState) {
         this.state = newState;
         System.out.println("[State] Incidente #" + id + " transicionou para: " + newState.getClass().getSimpleName());
