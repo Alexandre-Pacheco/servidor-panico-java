@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ApiHandler implements HttpHandler {
@@ -74,7 +73,35 @@ public class ApiHandler implements HttpHandler {
                 String action = parts[3];
                 facade.handleIncidentAction(incidentId, action);
                 response = createSuccessResponse("Ação '" + action + "' executada no incidente #" + incidentId);
-            } else {
+            }
+            // NOVOS ENDPOINTS PARA GESTÃO DE ADMINS
+            else if (path.equals("/admins") && method.equals("GET")) {
+                response = gson.toJson(facade.getAdmins());
+            } else if (path.equals("/admins") && method.equals("POST")) {
+                JsonObject body = gson.fromJson(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8), JsonObject.class);
+                boolean success = facade.addAdmin(
+                    body.get("cpf").getAsString(),
+                    body.get("password").getAsString(),
+                    body.get("masterPassword").getAsString(),
+                    body.get("name").getAsString()
+                );
+                if (success) {
+                    response = createSuccessResponse("Administrador adicionado com sucesso.");
+                } else {
+                    statusCode = 401; // Unauthorized or Bad Request
+                    response = createErrorResponse("Senha mestra incorreta ou CPF já existe.");
+                }
+            } else if (path.startsWith("/admins/") && method.equals("DELETE")) {
+                String adminCpf = path.substring(path.lastIndexOf('/') + 1);
+                boolean success = facade.removeAdmin(adminCpf);
+                if (success) {
+                    response = createSuccessResponse("Administrador removido com sucesso.");
+                } else {
+                    statusCode = 403; // Forbidden
+                    response = createErrorResponse("Não é possível remover o administrador principal.");
+                }
+            }
+            else {
                 statusCode = 404;
                 response = createErrorResponse("Endpoint não encontrado.");
             }
@@ -90,11 +117,11 @@ public class ApiHandler implements HttpHandler {
             os.write(response.getBytes(StandardCharsets.UTF_8));
         }
     }
-
+    
     private String createErrorResponse(String message) {
         return gson.toJson(Map.of("error", message));
     }
-
+    
     private String createSuccessResponse(String message) {
         return gson.toJson(Map.of("message", message));
     }
