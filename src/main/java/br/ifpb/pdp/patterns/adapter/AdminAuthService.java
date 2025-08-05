@@ -1,9 +1,11 @@
 package br.ifpb.pdp.patterns.adapter;
 
-public class AdminAuthService implements IAuthService {
-    @Override
-    public boolean login(String cpf, String password) {
-        System.out.println("[Adapter] Autenticando via AdminAuthService.");
-        return "111.222.333-44".equals(cpf) && "admin123".equals(password);
-    }
+import java.util.List;
+import java.util.Map;
+
+public interface IAuthService {
+    boolean login(String username, String password);
+    boolean addAdmin(String cpf, String password, String masterPassword, String name);
+    boolean removeAdmin(String cpf);
+    List<Map<String, String>> getAdmins();
 }
