@@ -5,4 +5,5 @@ public interface IncidentState {
     void cancel();
     void resolve();
     void markAsFalse();
+    String getStatusName();
 }
