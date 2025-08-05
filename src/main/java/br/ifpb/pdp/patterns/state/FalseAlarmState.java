@@ -9,4 +9,5 @@ public class FalseAlarmState implements IncidentState {
     @Override public void cancel() {}
     @Override public void resolve() {}
     @Override public void markAsFalse() {}
+    @Override public String getStatusName() { return "Alarme Falso"; }
 }
